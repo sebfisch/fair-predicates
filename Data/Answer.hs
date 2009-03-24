@@ -12,7 +12,7 @@
 -- 
 module Data.Answer ( 
 
-  Answer, fromAnswer, true, false, neg, (/\), (\/)
+  Answer, answer, fromAnswer, true, false, neg, (/\), (\/)
 
  ) where
 
@@ -22,6 +22,14 @@ infixr 2 \/
 -- | @Answer@s are like @Bool@s but can be evaluated incrementally.
 -- 
 data Answer = Yes | No | Undecided Answer
+
+instance Show Answer
+ where show a = if fromAnswer a then "true" else "false"
+
+-- | Creates an answer from a boolean.
+-- 
+answer :: Bool -> Answer
+answer b = Undecided (if b then Yes else No)
 
 -- | Evaluates an answer.
 -- 
