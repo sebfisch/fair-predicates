@@ -5,7 +5,29 @@
     >Fair Predicates</title
     ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
      /><meta name="generator" content="pandoc"
-     /><style type="text/css">
+     /><style type="text/css"
+    >
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode, table.sourceCode pre 
+   { margin: 0; padding: 0; border: 0; vertical-align: baseline; border: none; }
+td.lineNumbers { border-right: 1px solid #AAAAAA; text-align: right; color: #AAAAAA; padding-right: 5px; padding-left: 5px; }
+td.sourceCode { padding-left: 5px; }
+pre.sourceCode { }
+pre.sourceCode span.Normal { }
+pre.sourceCode span.Keyword { color: #007020; font-weight: bold; } 
+pre.sourceCode span.DataType { color: #902000; }
+pre.sourceCode span.DecVal { color: #40a070; }
+pre.sourceCode span.BaseN { color: #40a070; }
+pre.sourceCode span.Float { color: #40a070; }
+pre.sourceCode span.Char { color: #4070a0; }
+pre.sourceCode span.String { color: #4070a0; }
+pre.sourceCode span.Comment { color: #60a0b0; font-style: italic; }
+pre.sourceCode span.Others { color: #007020; }
+pre.sourceCode span.Alert { color: red; font-weight: bold; }
+pre.sourceCode span.Function { color: #06287e; }
+pre.sourceCode span.RegionMarker { }
+pre.sourceCode span.Error { color: red; font-weight: bold; }
+</style
+    ><style type="text/css">
   body { font-family: Optima, sans-serif; width: 40em; }
 
   h1, h2 { color: midnightblue; }
@@ -27,7 +49,326 @@
   ><h1 class="title"
     >Fair Predicates</h1
     ><p
-    >This Haskell library provides an implementation of Boolean predicates with an interleaved evaluation of arguments.</p
+    >This Haskell library provides an implementation of Boolean predicates with an interleaved evaluation of arguments. Conjunction and disjunction are not biased to one of their arguments but evaluate both step-wise interleaved.</p
+    ><h1 id="installation"
+    >Installation</h1
+    ><p
+    >Use <a href="http://hackage.haskell.org/trac/hackage/wiki/CabalInstall"
+      >cabal-install</a
+      > to download and install this library as follows:</p
+    ><pre
+    ><code
+      >    $ cabal update
+    $ cabal install fair-predicates
+</code
+      ></pre
+    ><h1 id="usage"
+    >Usage</h1
+    ><p
+    >To use this library, import it:</p
+    ><pre class="sourceCode haskell"
+    ><code
+      ><span class="Keyword"
+	>import</span
+	><span class="Normal NormalText"
+	> </span
+	><span class="Normal ModuleName"
+	>Data.Answer</span
+	><br
+	 /></code
+      ></pre
+    ><p
+    >It provides primitive answers <code
+      >true</code
+      > and <code
+      >false</code
+      > as well as combinators <code
+      >neg</code
+      > for negation, <code
+      >/\</code
+      > for conjunction, and <code
+      >\/</code
+      > for disjunction.</p
+    ><h2 id="sorted-binary-trees"
+    >Sorted binary trees</h2
+    ><p
+    >We can use interleaved conjunction to detect that binary trees are not sorted even if they are infinite (independent of which parts of the tree are infinite). Here is a type for binary trees containing numbers.</p
+    ><pre class="sourceCode haskell"
+    ><code
+      ><span class="Keyword"
+	>data</span
+	><span class="Normal NormalText"
+	> Tree = Tip | Fork Tree </span
+	><span class="DataType TypeConstructor"
+	>Int</span
+	><span class="Normal NormalText"
+	> Tree</span
+	><br
+	 /></code
+      ></pre
+    ><p
+    >An interleaving predicate that checks whether a tree is sorted can be defined almost as if its result would be a <code
+      >Bool</code
+      >.</p
+    ><pre class="sourceCode haskell"
+    ><code
+      ><span class="Function FunctionDefinition"
+	>isSorted ::</span
+	><span class="Normal NormalText"
+	> Tree -&gt; Answer</span
+	><br
+	 /><span class="Normal NormalText"
+	>isSorted Tip          = true</span
+	><br
+	 /><span class="Normal NormalText"
+	>isSorted (Fork l n r) = allEntries (&lt;n) l</span
+	><br
+	 /><span class="Normal NormalText"
+	>                     /\ allEntries (&gt;n) r</span
+	><br
+	 /><span class="Normal NormalText"
+	>                     /\ isSorted l</span
+	><br
+	 /><span class="Normal NormalText"
+	>                     /\ isSorted r</span
+	><br
+	 /></code
+      ></pre
+    ><p
+    >The auxiliary function <code
+      >allEntries</code
+      > checks a (boolean) predicate <code
+      >p</code
+      > for all entries of a tree.</p
+    ><pre class="sourceCode haskell"
+    ><code
+      ><span class="Function FunctionDefinition"
+	>allEntries ::</span
+	><span class="Normal NormalText"
+	> (</span
+	><span class="DataType TypeConstructor"
+	>Int</span
+	><span class="Normal NormalText"
+	> -&gt; </span
+	><span class="DataType TypeConstructor"
+	>Bool</span
+	><span class="Normal NormalText"
+	>) -&gt; Tree -&gt; Answer</span
+	><br
+	 /><span class="Normal NormalText"
+	>allEntries _ Tip          = true</span
+	><br
+	 /><span class="Normal NormalText"
+	>allEntries p (Fork l n r) = answer (p n) /\ allEntries p l /\ allEntries p r</span
+	><br
+	 /></code
+      ></pre
+    ><p
+    >It uses the combinator <code
+      >answer</code
+      > to convert a boolean into an answer.</p
+    ><p
+    >We can define simple infinite sorted trees by generating increasing right or decreasing left branches.</p
+    ><pre class="sourceCode haskell"
+    ><code
+      ><span class="Function FunctionDefinition"
+	>increasing ::</span
+	><span class="Normal NormalText"
+	> </span
+	><span class="DataType TypeConstructor"
+	>Int</span
+	><span class="Normal NormalText"
+	> -&gt; Tree</span
+	><br
+	 /><span class="Normal NormalText"
+	>increasing n = Fork Tip n (increasing (n</span
+	><span class="DecVal Decimal"
+	>+1</span
+	><span class="Normal NormalText"
+	>))</span
+	><br
+	 /><br
+	 /><span class="Function FunctionDefinition"
+	>decreasing ::</span
+	><span class="Normal NormalText"
+	> </span
+	><span class="DataType TypeConstructor"
+	>Int</span
+	><span class="Normal NormalText"
+	> -&gt; Tree</span
+	><br
+	 /><span class="Normal NormalText"
+	>decreasing n = Fork (decreasing (n</span
+	><span class="DecVal Decimal"
+	>-1</span
+	><span class="Normal NormalText"
+	>)) n Tip</span
+	><br
+	 /></code
+      ></pre
+    ><p
+    >The following tests both answer <code
+      >false</code
+      >:</p
+    ><pre class="sourceCode haskell"
+    ><code
+      ><span class="Function FunctionDefinition"
+	>testInfiniteLeft ::</span
+	><span class="Normal NormalText"
+	> Answer</span
+	><br
+	 /><span class="Normal NormalText"
+	>testInfiniteLeft = isSorted (Fork (decreasing </span
+	><span class="DecVal Decimal"
+	>0</span
+	><span class="Normal NormalText"
+	>) </span
+	><span class="DecVal Decimal"
+	>1</span
+	><span class="Normal NormalText"
+	> (Fork Tip </span
+	><span class="DecVal Decimal"
+	>0</span
+	><span class="Normal NormalText"
+	> Tip))</span
+	><br
+	 /><br
+	 /><span class="Function FunctionDefinition"
+	>testInfiniteRight ::</span
+	><span class="Normal NormalText"
+	> Answer</span
+	><br
+	 /><span class="Normal NormalText"
+	>testInfiniteRight = isSorted (Fork (Fork Tip </span
+	><span class="DecVal Decimal"
+	>2</span
+	><span class="Normal NormalText"
+	> Tip) </span
+	><span class="DecVal Decimal"
+	>1</span
+	><span class="Normal NormalText"
+	> (increasing </span
+	><span class="DecVal Decimal"
+	>2</span
+	><span class="Normal NormalText"
+	>))</span
+	><br
+	 /></code
+      ></pre
+    ><p
+    >An implementation using plain <code
+      >Bool</code
+      >s would be either right- or left-biased and, thus, diverge on at least one of these examples. With <code
+      >Data.Answer</code
+      > both tests yield <code
+      >false</code
+      >.</p
+    ><pre class="sourceCode haskell"
+    ><code
+      ><span class="Normal NormalText"
+	>main = </span
+	><span class="Keyword"
+	>do</span
+	><span class="Normal NormalText"
+	> </span
+	><span class="Function"
+	>putStrLn</span
+	><span class="Normal NormalText"
+	> </span
+	><span class="String"
+	>&quot;The following tests should answer 'false':&quot;</span
+	><br
+	 /><span class="Normal NormalText"
+	>          </span
+	><span class="Function"
+	>putStrLn</span
+	><span class="Normal NormalText"
+	> $ </span
+	><span class="String"
+	>&quot;infinite left subtree: &quot;</span
+	><span class="Normal NormalText"
+	> ++ </span
+	><span class="Function"
+	>show</span
+	><span class="Normal NormalText"
+	> testInfiniteLeft</span
+	><br
+	 /><span class="Normal NormalText"
+	>          </span
+	><span class="Function"
+	>putStrLn</span
+	><span class="Normal NormalText"
+	> $ </span
+	><span class="String"
+	>&quot;infinite right subtree: &quot;</span
+	><span class="Normal NormalText"
+	> ++ </span
+	><span class="Function"
+	>show</span
+	><span class="Normal NormalText"
+	> testInfiniteRight</span
+	><br
+	 /></code
+      ></pre
+    ><p
+    >Having doubts? Pass <a href="bintree.lhs"
+      >bintree.lhs</a
+      > to <code
+      >runhaskell</code
+      >!</p
+    ><p
+    >Complete API documentation is available from <a href="http://hackage.haskell.org/cgi-bin/hackage-scripts/package/fair-predicates"
+      >Hackage</a
+      >.</p
+    ><h1 id="implementation"
+    >Implementation</h1
+    ><p
+    >Implementing fair predicates is simple. Define an <code
+      >Answer</code
+      > type with an additional constructor for undecided answers,</p
+    ><pre class="sourceCode Haskell"
+    ><code
+      ><span class="Keyword"
+	>data</span
+	><span class="Normal NormalText"
+	> Answer = Yes | No | Undecided Answer</span
+	><br
+	 /></code
+      ></pre
+    ><p
+    >yield an undecided result from every combinator that constructs answers,</p
+    ><pre class="sourceCode Haskell"
+    ><code
+      ><span class="Normal NormalText"
+	>a /\ b = Undecided (conjunction a b)</span
+	><br
+	 /></code
+      ></pre
+    ><p
+    >and match both arguments in binary combinators.</p
+    ><pre class="sourceCode Haskell"
+    ><code
+      ><span class="Normal NormalText"
+	>conjunction Yes           a             = a</span
+	><br
+	 /><span class="Normal NormalText"
+	>conjunction No            _             = No</span
+	><br
+	 /><span class="Normal NormalText"
+	>conjunction a             Yes           = a</span
+	><br
+	 /><span class="Normal NormalText"
+	>conjunction _             No            = No</span
+	><br
+	 /><span class="Normal NormalText"
+	>conjunction (Undecided a) (Undecided b) = a /\ b</span
+	><br
+	 /></code
+      ></pre
+    ><p
+    >The complete implementation is available on <a href="http://github.com/sebfisch/fair-predicates"
+      >Github</a
+      >.</p
     ></body
   ></html
 >
