@@ -2,4 +2,8 @@ Fair Predicates
 ===============
 
 This Haskell library provides an implementation of Boolean predicates
-with an interleaved evaluation of arguments.
+with interleaved evaluation. Conjunction and disjunction are not
+biased to one of their arguments but evaluate both step-wise
+interleaved.
+
+For feedback or bug reports contact sebf@informatik.uni-kiel.de.
