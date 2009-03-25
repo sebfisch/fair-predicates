@@ -71,10 +71,10 @@ right or decreasing left branches.
 The following tests both answer `false`:
 
 > testInfiniteLeft :: Answer
-> testInfiniteLeft = isSorted (Fork (decreasing 0) 1 (Fork Tip 0 Tip))
+> testInfiniteLeft = isSorted (Fork (decreasing (-1)) 0 (Fork Tip (-1) Tip))
 >
 > testInfiniteRight :: Answer
-> testInfiniteRight = isSorted (Fork (Fork Tip 2 Tip) 1 (increasing 2))
+> testInfiniteRight = isSorted (Fork (Fork Tip 1 Tip) 0 (increasing 1))
 
 An implementation using plain `Bool`s would be either right- or
 left-biased and, thus, diverge on at least one of these examples. With
