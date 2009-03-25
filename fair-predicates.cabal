@@ -20,6 +20,8 @@ Homepage:      http://sebfisch.github.com/fair-predicates
 Build-Type:    Simple
 Stability:     experimental
 
+Extra-Source-Files: bintree.lhs
+
 Library
   Build-Depends:    base
   Exposed-Modules:  Data.Answer
