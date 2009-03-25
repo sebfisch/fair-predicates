@@ -113,6 +113,13 @@ conjunction (Undecided a) (Undecided b) = a /\ b
 
 The complete implementation is available on [Github].
 
+Contact
+=======
+
+For feedback or bug reports contact [Sebastian
+Fischer](sebf@informatik.uni-kiel.de).
+
+
 [cabal-install]: http://hackage.haskell.org/trac/hackage/wiki/CabalInstall
 [Hackage]: http://hackage.haskell.org/cgi-bin/hackage-scripts/package/fair-predicates
 [bintree.lhs]: bintree.lhs
