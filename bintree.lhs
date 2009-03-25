@@ -24,7 +24,11 @@ To use this library, import it:
 
 It provides primitive answers `true` and `false` as well as
 combinators `neg` for negation, `/\` for conjunction, and `\/` for
-disjunction.
+disjunction. The binary combinators are fair in the sense that they
+perform evaluation steps of other answer combinators interleaved. No
+real parallelism is implemented and there is still a slight bias
+towards the left argument: `false /\ undefined` is `false` but
+`undefined /\ false` is `undefined`.
 
 Sorted binary trees
 -------------------
@@ -113,6 +117,11 @@ conjunction (Undecided a) (Undecided b) = a /\ b
 
 The complete implementation is available on [Github].
 
+The implementation idea can be generalized to search for solutions of
+an arbitrary type. Oleg Kiselyov has implemented a [non-determinism
+monad][stream-monad] with a similar interleaving for the `mplus`
+operation.
+
 Contact
 =======
 
@@ -124,3 +133,5 @@ Fischer](sebf@informatik.uni-kiel.de).
 [Hackage]: http://hackage.haskell.org/cgi-bin/hackage-scripts/package/fair-predicates
 [bintree.lhs]: bintree.lhs
 [Github]: http://github.com/sebfisch/fair-predicates
+[stream-monad]: http://hackage.haskell.org/cgi-bin/hackage-scripts/package/stream-monad
+
