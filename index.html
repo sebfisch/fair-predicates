@@ -88,7 +88,15 @@ pre.sourceCode span.Error { color: red; font-weight: bold; }
       >/\</code
       > for conjunction, and <code
       >\/</code
-      > for disjunction.</p
+      > for disjunction. The binary combinators are fair in the sense that they perform evaluation steps of other answer combinators interleaved. No real parallelism is implemented and there is still a slight bias towards the left argument: <code
+      >false /\ undefined</code
+      > is <code
+      >false</code
+      > but <code
+      >undefined /\ false</code
+      > is <code
+      >undefined</code
+      >.</p
     ><h2 id="sorted-binary-trees"
     >Sorted binary trees</h2
     ><p
@@ -369,6 +377,12 @@ pre.sourceCode span.Error { color: red; font-weight: bold; }
     >The complete implementation is available on <a href="http://github.com/sebfisch/fair-predicates"
       >Github</a
       >.</p
+    ><p
+    >The implementation idea can be generalized to search for solutions of an arbitrary type. Oleg Kiselyov has implemented a <a href="http://hackage.haskell.org/cgi-bin/hackage-scripts/package/stream-monad"
+      >non-determinism monad</a
+      > with a similar interleaving for the <code
+      >mplus</code
+      > operation.</p
     ><h1 id="contact"
     >Contact</h1
     ><p
